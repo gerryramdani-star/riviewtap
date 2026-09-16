@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewTap | TAP. REVIEW. SELESAI.</title>
+    
+    <!-- Fonts: Inter for clean, modern readability (Anti-slop principle: clarity) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        zinc: {
+                            950: '#09090b', /* Deep charcoal background */
+                            900: '#18181b',
+                            800: '#27272a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Base styles */
+        body {
+            background-color: #09090b;
+            color: #d4d4d8; /* zinc-300 for general text to maintain high contrast */
+        }
+
+        /* Glassmorphism Panel (Anti-slop: Intentional framing, not just decoration) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Interactive Focus/Hover States */
+        .glass-panel:hover, .glass-panel:focus-within {
+            border-color: rgba(99, 102, 241, 0.4); /* Indigo border on interaction */
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Intentional Ambient Glow - Only active on specific primary elements or hover */
+        .glow-wrapper {
+            position: relative;
+        }
+        .glow-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #4f46e5, #9333ea, #4f46e5);
+            z-index: -1;
+            filter: blur(15px);
+            opacity: 0;
+            border-radius: inherit;
+            transition: opacity 0.4s ease;
+        }
+        .glow-wrapper:hover::before, .glow-wrapper:focus-within::before, .glow-active::before {
+            opacity: 0.6;
+        }
+
+        /* Clean utilities */
+        .text-gradient {
+            background: linear-gradient(to right, #f4f4f5, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Video Placeholder (Anti-slop: No fake generated images, honest placeholders) */
+        .video-placeholder {
+            background: repeating-linear-gradient(
+                45deg,
+                #18181b,
+                #18181b 10px,
+                #27272a 10px,
+                #27272a 20px
+            );
+            border: 1px dashed #52525b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            color: #71717a;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-indigo-500/30 selection:text-indigo-100">
+
+    <nav class="fixed top-0 w-full z-50 glass-panel border-x-0 border-t-0 rounded-none bg-zinc-950/80">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="font-bold text-xl tracking-tight text-white flex items-center gap-2">
+                <div class="w-6 h-6 rounded bg-indigo-600 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                ReviewTap
+            </div>
+            <a href="#order" class="px-5 py-2 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                Pesan Sekarang
+            </a>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-20 px-6 max-w-6xl mx-auto relative overflow-hidden">
+        <!-- Subtle background glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-600/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 text-xs font-medium text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                    </span>
+                    Kartu Google Review NFC + QR
+                </div>
+                
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                    Customer Kamu Puas, <br>
+                    <span class="text-zinc-500">Tapi Google Review Masih Sepi?</span>
+                </h1>
+                
+                <p class="text-lg text-zinc-400 max-w-lg leading-relaxed">
+                    Jangan bikin customer kamu repot mencari bisnis kamu di Google. Dengan <strong class="text-white">ReviewTap</strong>, customer cukup <strong class="text-white">TAP atau SCAN</strong> untuk langsung menuju halaman Google Review bisnis kamu.
+                </p>
+                
+                <div class="space-y-4">
+                    <a href="#order" class="glow-wrapper inline-flex group block w-full sm:w-auto">
+                        <button class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-zinc-950 flex items-center justify-center gap-3">
+                            [ PESAN REVIEWTAP ]
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </a>
+                    <p class="text-sm text-zinc-500">Mulai dari Rp15.000 / kartu</p>
+                </div>
+            </div>
+
+            <!-- Hero Visual (Demonstration setup) -->
+            <div class="relative mx-auto w-full max-w-md lg:max-w-[520px]">
+                <div class="relative z-10">
+                    <!-- Floating Badge -->
+                    <div class="absolute -top-4 -right-2 sm:-right-6 px-4 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-xs sm:text-sm font-bold text-white shadow-xl shadow-black/50 rotate-3 z-20">
+                        Aktif khusus bisnis kamu ✨
+                    </div>
+                    
+                    <!-- Image Container 4:3 -->
+                    <div class="glass-panel p-2 sm:p-3">
+                        <!-- GANTI URL SRC DI BAWAH INI DENGAN LINK GAMBAR ANDA -->
+                        <img 
+                            src="https://placehold.co/800x600/18181b/4f46e5?text=Foto+Produk+ReviewTap+(4:3)" 
+                            alt="Ilustrasi Penggunaan ReviewTap" 
+                            class="w-full aspect-[4/3] object-cover rounded-xl border border-zinc-800/50 shadow-inner"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-20 px-6 bg-zinc-900 border-y border-white/5">
+        <div class="max-w-6xl mx-auto">
+            <div class="max-w-2xl mb-12">
+                <span class="block text-indigo-400 font-bold tracking-wider text-sm mb-3 uppercase">Ini realita yang terjadi</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Customer Puas Belum Tentu Kasih Review.</h2>
+                <p class="text-zinc-400 text-lg leading-relaxed">
+                    Customer mungkin suka produk kamu. Pelayanan kamu mungkin bagus. Pengalaman mereka mungkin memuaskan. 
+                    Tapi setelah meninggalkan bisnis kamu… <strong class="text-white">mereka bisa saja lupa memberikan review.</strong>
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <!-- Problem 1 -->
+                <div class="glass-panel p-8">
+                    <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 mb-6 font-mono text-sm border border-zinc-700">01</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Harus Cari Bisnis</h3>
+                    <p class="text-zinc-400 leading-relaxed">Customer harus membuka Google dan mencari nama bisnis kamu secara manual.</p>
+                </div>
+                <!-- Problem 2 -->
+                <div class="glass-panel p-8">
+                    <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 mb-6 font-mono text-sm border border-zinc-700">02</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Terlalu Banyak Langkah</h3>
+                    <p class="text-zinc-400 leading-relaxed">Setelah menemukan bisnis, mereka masih harus mencari halaman untuk memberikan review.</p>
+                </div>
+                <!-- Problem 3 -->
+                <div class="glass-panel p-8">
+                    <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 mb-6 font-mono text-sm border border-zinc-700">03</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Akhirnya Lupa</h3>
+                    <p class="text-zinc-400 leading-relaxed">Semakin banyak langkah yang harus dilakukan, semakin mudah customer menunda atau melupakannya.</p>
+                </div>
+            </div>
+
+            <div class="p-6 border-l-4 border-indigo-500 bg-indigo-500/5 rounded-r-lg">
+                <p class="text-lg text-white font-medium">Bukan berarti customer kamu tidak mau kasih review. <br class="hidden sm:block">Bisa jadi, prosesnya saja yang terlalu ribet.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 max-w-6xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Kasih Customer Jalan Pintas.</h2>
+            <p class="text-zinc-400 text-lg leading-relaxed mb-8">
+                Kenalkan <strong class="text-white">ReviewTap</strong>. Satu kartu yang membantu customer langsung menuju halaman Google Review bisnis kamu. 
+                Tidak perlu menyuruh mereka mencari nama bisnis. Tidak perlu menjelaskan langkah demi langkah.
+            </p>
+            <a href="#order" class="inline-flex px-8 py-3 bg-white text-zinc-950 font-bold rounded-full hover:bg-zinc-200 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-zinc-950">
+                [ SAYA MAU REVIEWTAP ]
+            </a>
+        </div>
+
+        <div class="mt-24">
+            <h2 class="text-2xl font-bold text-white mb-10 text-center">Sesederhana Ini.</h2>
+            
+            <div class="relative">
+                <!-- Connecting line for desktop -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent -translate-y-1/2 -z-10"></div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="glass-panel p-8 text-center relative bg-zinc-950">
+                        <!-- GANTI URL SRC DI BAWAH INI DENGAN LINK GAMBAR FOTO STEP 1 ANDA -->
+                        <img 
+                            src="https://placehold.co/400x300/18181b/4f46e5?text=Foto+Tap+(4:3)" 
+                            alt="Ilustrasi Step 1" 
+                            class="w-full aspect-[4/3] object-cover rounded-xl border border-zinc-800/50 shadow-inner mb-6"
+                        >
+                        <h3 class="text-sm font-bold text-indigo-400 mb-2">STEP 01</h3>
+                        <h4 class="text-xl font-bold text-white mb-3">TAP atau SCAN</h4>
+                        <p class="text-sm text-zinc-400">Customer mendekatkan smartphone ke ReviewTap atau scan QR Code.</p>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="glass-panel p-8 text-center relative bg-zinc-950">
+                        <!-- GANTI URL SRC DI BAWAH INI DENGAN LINK GAMBAR FOTO STEP 2 ANDA -->
+                        <img 
+                            src="https://placehold.co/400x300/18181b/4f46e5?text=Foto+Link+(4:3)" 
+                            alt="Ilustrasi Step 2" 
+                            class="w-full aspect-[4/3] object-cover rounded-xl border border-zinc-800/50 shadow-inner mb-6"
+                        >
+                        <h3 class="text-sm font-bold text-indigo-400 mb-2">STEP 02</h3>
+                        <h4 class="text-xl font-bold text-white mb-3">LINK TERBUKA</h4>
+                        <p class="text-sm text-zinc-400">Customer langsung diarahkan ke URL Google Review bisnis kamu.</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="glass-panel p-8 text-center relative bg-zinc-950">
+                        <!-- GANTI URL SRC DI BAWAH INI DENGAN LINK GAMBAR FOTO STEP 3 ANDA -->
+                        <img 
+                            src="https://placehold.co/400x300/18181b/4f46e5?text=Foto+Review+(4:3)" 
+                            alt="Ilustrasi Step 3" 
+                            class="w-full aspect-[4/3] object-cover rounded-xl border border-zinc-800/50 shadow-inner mb-6"
+                        >
+                        <h3 class="text-sm font-bold text-indigo-400 mb-2">STEP 03</h3>
+                        <h4 class="text-xl font-bold text-white mb-3">TINGGAL REVIEW</h4>
+                        <p class="text-sm text-zinc-400">Customer bisa langsung memberikan rating dan review.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center text-zinc-500 font-medium tracking-wide">
+                No search. • No ribet. • No langkah yang tidak perlu.
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-zinc-900 border-y border-white/5">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-10 text-center">Lihat Sendiri Cara Kerjanya.</h2>
+            
+            <div class="glass-panel p-2 flex flex-col md:flex-row gap-2 max-w-sm mx-auto mb-10 rounded-xl bg-zinc-950/50">
+                <button onclick="switchTab('nfc')" id="btn-nfc" class="flex-1 py-3 px-6 rounded-lg text-sm font-bold transition-all bg-zinc-800 text-white shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    NFC (TAP)
+                </button>
+                <button onclick="switchTab('qr')" id="btn-qr" class="flex-1 py-3 px-6 rounded-lg text-sm font-bold transition-all text-zinc-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    QR (SCAN)
+                </button>
+            </div>
+
+            <!-- NFC Tab Content -->
+            <div id="tab-nfc" class="animate-[fadeIn_0.3s_ease]">
+                <div class="grid md:grid-cols-2 gap-10 items-center">
+                    <div class="w-full max-w-[280px] mx-auto aspect-[9/16] rounded-2xl overflow-hidden bg-zinc-950 relative border border-zinc-800 shadow-2xl">
+                        <!-- GANTI 'YOUR_NFC_VIDEO_ID' DENGAN ID YOUTUBE SHORTS ANDA -->
+                        <iframe 
+                            src="https://www.youtube.com/embed/YOUR_NFC_VIDEO_ID?rel=0&modestbranding=1" 
+                            title="Demo ReviewTap NFC (TAP)" 
+                            class="absolute top-0 left-0 w-full h-full" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Cukup satu kali tap.</h3>
+                        <p class="text-zinc-400 text-lg leading-relaxed mb-6">
+                            Tidak perlu aplikasi khusus. Customer cukup mendekatkan smartphone ber-NFC mereka ke ReviewTap Card, 
+                            dan layar mereka akan langsung diarahkan ke halaman Google Review bisnis kamu.
+                        </p>
+                        <div class="flex items-center gap-3 text-sm text-indigo-300 font-medium bg-indigo-900/20 px-4 py-3 rounded-lg border border-indigo-500/20">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Mendukung iPhone & Android dengan fitur NFC aktif.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Tab Content -->
+            <div id="tab-qr" class="hidden animate-[fadeIn_0.3s_ease]">
+                <div class="grid md:grid-cols-2 gap-10 items-center">
+                    <div class="w-full max-w-[280px] mx-auto aspect-[9/16] rounded-2xl overflow-hidden bg-zinc-950 relative border border-zinc-800 shadow-2xl">
+                        <!-- GANTI 'YOUR_QR_VIDEO_ID' DENGAN ID YOUTUBE SHORTS ANDA -->
+                        <iframe 
+                            src="https://www.youtube.com/embed/YOUR_QR_VIDEO_ID?rel=0&modestbranding=1" 
+                            title="Demo ReviewTap QR (SCAN)" 
+                            class="absolute top-0 left-0 w-full h-full" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Tinggal scan QR Code.</h3>
+                        <p class="text-zinc-400 text-lg leading-relaxed mb-6">
+                            Tidak menggunakan NFC? Hasilnya tetap sama. Customer cukup membuka kamera bawaan smartphone dan memindai QR Code.
+                            Mekanisme cadangan yang memastikan <strong class="text-white">100% customer</strong> bisa mengakses halaman review.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 max-w-6xl mx-auto">
+        <div class="text-center max-w-2xl mx-auto mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Satu Kartu. Khusus untuk Bisnis Kamu.</h2>
+            <p class="text-zinc-400 text-lg leading-relaxed mb-8">
+                ReviewTap bukan kartu generik yang mengarah ke halaman orang lain. Setelah kamu melakukan <strong class="text-white">aktivasi</strong>, 
+                kartu akan dikonfigurasi untuk mengarah ke halaman Google Review bisnis kamu secara permanen.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm font-bold text-zinc-300">
+                <span class="bg-zinc-800 px-4 py-2 rounded-lg border border-zinc-700">BELI</span>
+                <svg class="w-4 h-4 text-zinc-600 rotate-90 sm:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                <span class="bg-zinc-800 px-4 py-2 rounded-lg border border-zinc-700">AKTIVASI</span>
+                <svg class="w-4 h-4 text-zinc-600 rotate-90 sm:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                <span class="bg-indigo-600 text-white px-4 py-2 rounded-lg border border-indigo-500">SIAP DIGUNAKAN</span>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="text-2xl font-bold text-white mb-10 text-center">Bisa Dipakai di Berbagai Jenis Bisnis.</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Case 1 -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        ☕ Cafe & Restoran
+                    </h3>
+                    <p class="text-sm text-zinc-400">Letakkan di meja kasir atau setelah customer selesai makan saat meminta tagihan.</p>
+                </div>
+                <!-- Case 2 -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        ✂️ Salon & Barbershop
+                    </h3>
+                    <p class="text-sm text-zinc-400">Letakkan di meja pembayaran setelah treatment atau haircut selesai dengan sempurna.</p>
+                </div>
+                <!-- Case 3 -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        🔧 Bengkel
+                    </h3>
+                    <p class="text-sm text-zinc-400">Tempatkan di area customer service atau counter pembayaran setelah kendaraan selesai.</p>
+                </div>
+                <!-- Case 4 -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        🛍️ Retail & Toko
+                    </h3>
+                    <p class="text-sm text-zinc-400">Letakkan di dekat kasir agar customer bisa langsung memberikan review setelah transaksi.</p>
+                </div>
+            </div>
+            <p class="text-center text-zinc-500 mt-8 font-medium">Dimanapun customer bertemu dengan bisnis kamu, ReviewTap bisa menjadi jalan pintas menuju review.</p>
+        </div>
+    </section>
+
+    <section id="order" class="py-24 px-6 bg-zinc-900 border-y border-white/5 relative overflow-hidden">
+        <!-- Ambient glow for pricing section -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            
+            <!-- Benefits -->
+            <div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">Kenapa Harus ReviewTap?</h2>
+                <ul class="space-y-6">
+                    <li class="flex gap-4">
+                        <div class="mt-1 w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Lebih Praktis</h4>
+                            <p class="text-zinc-400 text-sm mt-1">Customer tidak perlu mencari bisnis kamu secara manual di Google Maps.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <div class="mt-1 w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">TAP + QR (Dua Cara)</h4>
+                            <p class="text-zinc-400 text-sm mt-1">Akomodasi semua jenis smartphone. Tap untuk HP ber-NFC, Scan QR untuk yang lainnya.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <div class="mt-1 w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Bisa Dipakai Berulang Kali</h4>
+                            <p class="text-zinc-400 text-sm mt-1">Satu kartu dapat digunakan berkali-kali oleh customer yang berbeda selamanya.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <div class="mt-1 w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Ukuran Ringkas</h4>
+                            <p class="text-zinc-400 text-sm mt-1">Mudah diletakkan di meja kasir, counter, meja restoran, atau area checkout tanpa makan tempat.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Pricing Card (Anti-slop: High contrast, clear hierarchy, distinct interactive area) -->
+            <div class="glow-wrapper rounded-2xl">
+                <div class="bg-zinc-950 border border-indigo-500/30 rounded-2xl p-8 shadow-2xl relative z-10 h-full">
+                    <div class="absolute -top-4 right-8 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                        TERJANGKAU
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-white mb-2">ReviewTap Card</h3>
+                    <p class="text-zinc-400 text-sm mb-6">Mulai kumpulkan review positif dengan mudah.</p>
+                    
+                    <div class="flex items-baseline gap-2 mb-8 border-b border-zinc-800 pb-8">
+                        <span class="text-4xl md:text-5xl font-extrabold text-white">Rp15.000</span>
+                        <span class="text-zinc-500 font-medium">/ kartu</span>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-zinc-300">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Fisik ReviewTap Card
+                        </li>
+                        <li class="flex items-center gap-3 text-zinc-300">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Chip NFC Tertanam
+                        </li>
+                        <li class="flex items-center gap-3 text-zinc-300">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            QR Code Cadangan
+                        </li>
+                        <li class="flex items-center gap-3 text-zinc-300">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Panduan Aktivasi Bisnis
+                        </li>
+                    </ul>
+                    
+                    <a href="https://wa.me/6280000000000?text=Halo%20ReviewTap,%20saya%20mau%20pesan%20Kartu%20Google%20Review.%0ANama%20bisnis:%20%0AJenis%20bisnis:%20%0AJumlah%20kartu:%20" target="_blank" rel="noopener noreferrer" class="block w-full py-4 text-center bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        [ PESAN SEKARANG VIA WHATSAPP ]
+                    </a>
+                    <p class="text-center text-xs text-zinc-500 mt-4">Pesan kartu → Aktivasi → Siap digunakan</p>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="py-24 px-6 max-w-4xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-12 text-center">“Tapi Bisnis Saya Bisa Pakai?”</h2>
+        
+        <div class="glass-panel p-8 mb-12 border-l-4 border-indigo-500 text-center">
+            <h3 class="text-xl font-bold text-white mb-2">Bisa.</h3>
+            <p class="text-zinc-300">
+                ReviewTap cocok digunakan untuk bisnis yang berinteraksi langsung dengan customer dan ingin memudahkan proses pemberian Google Review.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            <!-- FAQ Items with simple interactive logic -->
+            <details class="glass-panel group [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex cursor-pointer items-center justify-between gap-1.5 p-6 text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl">
+                    Apakah hanya bisa untuk cafe?
+                    <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180 text-zinc-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-6 pb-6 pt-4 text-zinc-400 leading-relaxed border-t border-zinc-800/50 mt-2 mx-2">
+                    Tidak. ReviewTap dapat digunakan untuk cafe, restoran, salon, barbershop, bengkel, retail, jasa, dan berbagai bisnis customer-facing lainnya.
+                </div>
+            </details>
+
+            <details class="glass-panel group [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex cursor-pointer items-center justify-between gap-1.5 p-6 text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl">
+                    Apakah kartunya sudah otomatis mengarah ke bisnis saya?
+                    <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180 text-zinc-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-6 pb-6 pt-4 text-zinc-400 leading-relaxed border-t border-zinc-800/50 mt-2 mx-2">
+                    Kartu perlu melalui proses aktivasi agar dapat diarahkan ke halaman Google Review bisnis kamu secara spesifik. Panduan disertakan.
+                </div>
+            </details>
+
+            <details class="glass-panel group [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex cursor-pointer items-center justify-between gap-1.5 p-6 text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl">
+                    Apakah customer harus menggunakan aplikasi khusus?
+                    <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180 text-zinc-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-6 pb-6 pt-4 text-zinc-400 leading-relaxed border-t border-zinc-800/50 mt-2 mx-2">
+                    Tidak. Customer cukup menggunakan smartphone bawaan mereka untuk melakukan tap NFC atau scan QR lewat kamera.
+                </div>
+            </details>
+        </div>
+        
+        <!-- Anti-Slop: Section 11 Social Proof (No Fake Data) -->
+        <div class="mt-24 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Dipakai Saat Momen Customer Masih Ingat Pengalamannya.</h2>
+            <p class="text-zinc-400 mb-10 max-w-2xl mx-auto">
+                Buktikan sendiri kemudahannya. Tanpa aplikasi, tanpa mengetik, tanpa bingung.
+            </p>
+            
+            <div class="grid sm:grid-cols-2 gap-8 max-w-lg mx-auto sm:max-w-2xl">
+                <!-- Video 1: TAP DEMO -->
+                <div class="glass-panel p-4 flex flex-col gap-3 rounded-2xl">
+                    <div class="w-full aspect-[9/16] rounded-xl overflow-hidden bg-zinc-950 relative border border-zinc-800">
+                        <!-- GANTI 'YOUR_VIDEO_ID_1' DENGAN ID YOUTUBE ANDA -->
+                        <iframe 
+                            src="https://www.youtube.com/embed/YOUR_VIDEO_ID_1?rel=0&modestbranding=1" 
+                            title="Demo ReviewTap NFC (TAP)" 
+                            class="absolute top-0 left-0 w-full h-full" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <span class="text-sm font-bold text-indigo-400 mt-1">REAL DEMO: TAP (NFC)</span>
+                </div>
+
+                <!-- Video 2: SCAN DEMO -->
+                <div class="glass-panel p-4 flex flex-col gap-3 rounded-2xl">
+                    <div class="w-full aspect-[9/16] rounded-xl overflow-hidden bg-zinc-950 relative border border-zinc-800">
+                        <!-- GANTI 'YOUR_VIDEO_ID_2' DENGAN ID YOUTUBE ANDA -->
+                        <iframe 
+                            src="https://www.youtube.com/embed/YOUR_VIDEO_ID_2?rel=0&modestbranding=1" 
+                            title="Demo ReviewTap QR (SCAN)" 
+                            class="absolute top-0 left-0 w-full h-full" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <span class="text-sm font-bold text-indigo-400 mt-1">REAL DEMO: SCAN (QR)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 bg-indigo-900/20 border-t border-indigo-500/20 relative overflow-hidden text-center">
+        <!-- Background accent -->
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-1/2 bg-indigo-600/20 blur-[100px] -z-10 pointer-events-none"></div>
+
+        <div class="max-w-3xl mx-auto relative z-10">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Jangan Bikin Customer Kamu Mencari.</h2>
+            <p class="text-xl text-zinc-300 mb-10 leading-relaxed">
+                Bikin mereka lebih mudah memberikan review untuk bisnis kamu.<br>
+                <strong class="text-white">TAP. REVIEW. SELESAI.</strong>
+            </p>
+            
+            <a href="https://wa.me/6280000000000?text=Halo%20ReviewTap,%20saya%20mau%20pesan%20Kartu%20Google%20Review.%0ANama%20bisnis:%20%0AJenis%20bisnis:%20%0AJumlah%20kartu:%20" target="_blank" rel="noopener noreferrer" class="glow-wrapper inline-block group">
+                <button class="px-10 py-5 bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-bold rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-zinc-950 flex items-center justify-center gap-3 mx-auto">
+                    [ PESAN REVIEWTAP SEKARANG ]
+                    <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </a>
+            <p class="mt-6 text-sm text-indigo-300 font-medium">Aktivasi khusus untuk bisnis kamu. Rp15.000 / kartu.</p>
+        </div>
+    </section>
+
+    <footer class="py-10 px-6 border-t border-white/10 bg-zinc-950 text-center text-zinc-500 text-sm">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="font-bold text-white flex items-center gap-2">
+                <div class="w-4 h-4 rounded bg-zinc-800 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                ReviewTap
+            </div>
+            <p>&copy; 2026 ReviewTap. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple JS for Tab switching (Anti-slop: lightweight, functional, no heavy library needed)
+        function switchTab(tab) {
+            const btnNfc = document.getElementById('btn-nfc');
+            const btnQr = document.getElementById('btn-qr');
+            const tabNfc = document.getElementById('tab-nfc');
+            const tabQr = document.getElementById('tab-qr');
+
+            if (tab === 'nfc') {
+                // Update Button Styles
+                btnNfc.classList.replace('text-zinc-400', 'text-white');
+                btnNfc.classList.replace('hover:text-white', 'bg-zinc-800');
+                btnNfc.classList.add('bg-zinc-800', 'shadow-md');
+                
+                btnQr.classList.replace('text-white', 'text-zinc-400');
+                btnQr.classList.remove('bg-zinc-800', 'shadow-md');
+                btnQr.classList.add('hover:text-white');
+
+                // Update Content Visibility
+                tabNfc.classList.remove('hidden');
+                tabQr.classList.add('hidden');
+            } else {
+                // Update Button Styles
+                btnQr.classList.replace('text-zinc-400', 'text-white');
+                btnQr.classList.replace('hover:text-white', 'bg-zinc-800');
+                btnQr.classList.add('bg-zinc-800', 'shadow-md');
+                
+                btnNfc.classList.replace('text-white', 'text-zinc-400');
+                btnNfc.classList.remove('bg-zinc-800', 'shadow-md');
+                btnNfc.classList.add('hover:text-white');
+
+                // Update Content Visibility
+                tabQr.classList.remove('hidden');
+                tabNfc.classList.add('hidden');
+            }
+        }
+        
+        // Anti-slop animation helper for tab switches
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(5px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
